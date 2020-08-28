@@ -93,7 +93,7 @@
           if (sum === dimension || sum === -dimension) {
             document.getElementById("turn").innerText = `${
               sum > 0 ? player1.value : player2.value
-            }'s wins`;
+            } wins`;
             gameOver = true;
             return;
           }
@@ -106,7 +106,7 @@
           if (sum === dimension || sum === -dimension) {
             document.getElementById("turn").innerText = `${
               sum > 0 ? player1.value : player2.value
-            }'s wins`;
+            } wins`;
             gameOver = true;
             return;
           }
@@ -120,7 +120,7 @@
         if (sum === dimension || sum === -dimension) {
           document.getElementById("turn").innerText = `${
             sum > 0 ? player1.value : player2.value
-          }'s wins`;
+          } wins`;
           gameOver = true;
           return;
         }
@@ -133,11 +133,10 @@
         if (sum === dimension || sum === -dimension) {
           document.getElementById("turn").innerText = `${
             sum > 0 ? player1.value : player2.value
-          }'s wins`;
+          } wins`;
           gameOver = true;
           return;
         }
-
         if (turn === dimension * dimension) {
           document.getElementById("turn").innerText = `Match Drawn`;
           gameOver = true;
@@ -155,7 +154,7 @@
         document.getElementById("turn").innerText = `${
           turn % 2 === 0 ? player1.value : player2.value
         }'s turn`;
-        if (turn > 4) {
+        if (turn >= dimension * 2 - 1) {
           checkGameResult();
         }
       }
@@ -169,7 +168,7 @@
         dimension = 3;
         player1 = document.getElementById("player1");
         player2 = document.getElementById("player2");
-        dimension = document.getElementById("dimension").value;
+        dimension = +document.getElementById("dimension").value;
         player1.setAttribute("disabled", true);
         player2.setAttribute("disabled", true);
         document.getElementById("dimension").setAttribute("disabled", true);
@@ -179,7 +178,7 @@
         } else if (player2.value.trim() === "") {
           document.getElementById("turn").innerText = `Player 2 name missing`;
           return;
-        } else if (dimension.trim() === "") {
+        } else if (isNaN(dimension)) {
           dimension = 3;
         }
         document.getElementById("turn").innerText = `${player1.value}'s turn`;
