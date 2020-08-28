@@ -70,80 +70,98 @@
     <button onclick="init();">Start Game</button>
     <br />
     <br />
-    <p id="turn"></p>
+    <button onclick="init(true);">Restart Game</button>
+    <br />
+    <br />
+    <p id="turn" style="text-align: center;"></p>
     <div class="game"></div>
     <script>
       let turn = 0;
       let board = [];
       let dimension = 3;
       let player1, player2;
+      let gameOver = false;
       function checkGameResult() {
-        for (let i = 0; i < 3; i++) {
-          if (
-            board[i][0] &&
-            board[i][0] !== "" &&
-            board[i][1] === board[i][0] &&
-            board[i][1] === board[i][2]
-          ) {
-            document.write(
-              (turn % 2 === 0 ? player1.value : player2.value) + " wins"
-            );
+        let sum = 0;
+        for (let i = 0; i < dimension; i++) {
+          sum = 0;
+          for (let j = 0; j < dimension; j++) {
+            if (board[i] && board[i][j] !== undefined) {
+              sum += board[i][j] === "X" ? 1 : -1;
+            } else break;
+          }
+          if (sum === dimension || sum === -dimension) {
+            document.getElementById("turn").innerText = `${
+              sum > 0 ? player1.value : player2.value
+            }'s wins`;
+            gameOver = true;
+            return;
+          }
+          sum = 0;
+          for (let j = 0; j < dimension; j++) {
+            if (board[j] && board[j][i] !== undefined) {
+              sum += board[j][i] === "X" ? 1 : -1;
+            } else break;
+          }
+          if (sum === dimension || sum === -dimension) {
+            document.getElementById("turn").innerText = `${
+              sum > 0 ? player1.value : player2.value
+            }'s wins`;
+            gameOver = true;
             return;
           }
         }
-        for (let i = 0; i < 3; i++) {
-          if (
-            board[0][i] &&
-            board[0][i] !== "" &&
-            board[1][i] === board[0][i] &&
-            board[1][i] === board[2][i]
-          ) {
-            document.write(
-              (turn % 2 === 0 ? player1.value : player2.value) + " wins"
-            );
-            return;
-          }
+        sum = 0;
+        for (let i = 0; i < dimension; i++) {
+          if (board[i] && board[i][i] !== undefined) {
+            sum += board[i][i] === "X" ? 1 : -1;
+          } else break;
         }
-        if (
-          board[0][0] &&
-          board[0][0] !== "" &&
-          board[1][1] === board[0][0] &&
-          board[1][1] === board[2][2]
-        ) {
-          document.write(
-            (turn % 2 === 0 ? player1.value : player2.value) + " wins"
-          );
+        if (sum === dimension || sum === -dimension) {
+          document.getElementById("turn").innerText = `${
+            sum > 0 ? player1.value : player2.value
+          }'s wins`;
+          gameOver = true;
           return;
         }
-        if (
-          board[0][2] &&
-          board[0][2] !== "" &&
-          board[1][1] === board[0][2] &&
-          board[1][1] === board[2][0]
-        ) {
-          document.write(
-            (turn % 2 === 0 ? player1.value : player2.value) + " wins"
-          );
+        sum = 0;
+        for (let i = 0; i < dimension; i++) {
+          if (board[i] && board[i][dimension - 1 - i] !== undefined) {
+            sum += board[i][dimension - 1 - i] === "X" ? 1 : -1;
+          } else break;
+        }
+        if (sum === dimension || sum === -dimension) {
+          document.getElementById("turn").innerText = `${
+            sum > 0 ? player1.value : player2.value
+          }'s wins`;
+          gameOver = true;
           return;
         }
-        if (turn == 9) alert("Match Drawn");
+
+        if (turn === dimension * dimension) {
+          document.getElementById("turn").innerText = `Match Drawn`;
+          gameOver = true;
+        }
       }
       function play(e) {
+        if (gameOver) return;
         let cell = e.target;
         if (cell.innerText === "") cell.innerText = turn % 2 === 0 ? "X" : "0";
         else return;
         if (!board[cell.getAttribute("x")]) board[cell.getAttribute("x")] = [];
         board[cell.getAttribute("x")][cell.getAttribute("y")] =
           turn % 2 === 0 ? "X" : "0";
-        if (turn > 3) {
-          checkGameResult();
-        }
         turn++;
         document.getElementById("turn").innerText = `${
           turn % 2 === 0 ? player1.value : player2.value
         }'s turn`;
+        if (turn > 4) {
+          checkGameResult();
+        }
       }
-      function init() {
+      function init(restart = false) {
+        gameOver = restart ? false : gameOver;
+        if (gameOver) return;
         let container = document.querySelector(".game");
         container.innerHTML = "";
         turn = 0;
@@ -152,6 +170,9 @@
         player1 = document.getElementById("player1");
         player2 = document.getElementById("player2");
         dimension = document.getElementById("dimension").value;
+        player1.setAttribute("disabled", true);
+        player2.setAttribute("disabled", true);
+        document.getElementById("dimension").setAttribute("disabled", true);
         if (player1.value.trim() === "") {
           document.getElementById("turn").innerText = `Player 1 name missing`;
           return;
